@@ -1,4 +1,4 @@
-# LP3 Drone Project - Lab 2
+# LP4 Drone Project - Lab
 Intall the requied Python packages, redis is added in the list
 ```
 pip3 install -r requirements.txt
