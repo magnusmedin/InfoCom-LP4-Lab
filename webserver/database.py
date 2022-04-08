@@ -3,7 +3,7 @@ from flask_cors import CORS
 import redis
 import json
 from multiprocessing import Process, Pipe
-from route_planner import getQ, send_request
+from route_planner import send_request
 import pickle
 
 app = Flask(__name__)
