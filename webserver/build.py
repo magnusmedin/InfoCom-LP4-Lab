@@ -55,10 +55,6 @@ def get_drones():
     # drones = ["Test", "drone124"]
     drones = ["drone124"]
     # info = redis_server.get("Test")
-    # info = json.loads(info)
-    # print(info)
-    # if info == None:
-    #     info = {'long': 13.21008, 'lat': 55.71106, 'status': 'idle', 'id': 'Test'}
     
     # translated = translate((float(info['long']), float(info['lat'])))
     # drone_dict[info['id']] = {'longitude': translated[0], 'latitude': translated[1], 'status': info['status']}
@@ -66,6 +62,7 @@ def get_drones():
         info = redis_server.get(d)
         if info == None:
             info = {'long': 13.21008, 'lat': 55.71106, 'status': 'idle', 'id': d}
+            redis_server.set(f"{d}", json.dumps(info))
         else:
             info = json.loads(info)
         translated = translate((float(info['long']), float(info['lat'])))
