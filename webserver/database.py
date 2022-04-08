@@ -31,15 +31,16 @@ def drone():
     redis_server.set(f"{droneID}", json.dumps(info))
 
     # if status is idle and queue has jobs then assignt first job from queue to drone
-    with open("queue.obj", "rb") as f:
-        q = pickle.load(f)
-    if len(q) > 0:
-        coords = q.popleft()
-        d_url = 'http://' + info['ip'] + ':5000'
-        send_request(d_url, coords)
-        with open("queue.obj", "wb+") as f:
-            pickle.dump(q, f)
-        print("order here")
+    if drone_status == 'idle':
+        with open("queue.obj", "rb") as f:
+            q = pickle.load(f)
+        if len(q) > 0:
+            coords = q.popleft()
+            d_url = 'http://' + info['ip'] + ':5000'
+            send_request(d_url, coords)
+            with open("queue.obj", "wb+") as f:
+                pickle.dump(q, f)
+            print("order here")
 
     # =======================================================================================
     return 'Get data'
