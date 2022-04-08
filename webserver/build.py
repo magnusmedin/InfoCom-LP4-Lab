@@ -7,6 +7,7 @@ import time
 import redis
 import pickle
 import json
+import uuid
 
 app = Flask(__name__)
 CORS(app)
@@ -74,7 +75,18 @@ def get_drones():
 
     return jsonify(drone_dict)
 
+
+queue = {}
+@app.route('get_order/<uuid: order_uuid>', methods=['GET'])
+def get_order(order_uuid):
+    order = queue[order_uuid]
+    return(jsonify(order))
+
+@app.route('track/<uuid: order_uuid>', methods=['GET'])
+def track(order_uuid):
+    return render_template('track.html', **str(order_uuid))
+
 if __name__ == "__main__":
     g = translate((13.21008, 55.71106))
-    print(g)
+    print(g)z
     app.run(debug=True, host='0.0.0.0', port='5000')

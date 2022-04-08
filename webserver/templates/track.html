@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <title>Drone in Lund</title>
+  <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+  <script type="text/javascript">
+    function LoadDrone(droneID, x, y, status) {
+      var doc = document.getElementById("map");
+      $( doc ).ready(function() {
+      var doc_svg = doc.getSVGDocument();
+      var svg = doc_svg.getElementById("map-svg");
+      var circleNode = svg.getElementById(droneID);
+      var color = 'red';
+      if (status == 'idle'){
+        color = 'green'
+      }
+      if (status == 'waiting'){
+        color = 'yellow'
+      }
+      if(circleNode == null){
+        circleNode = doc_svg.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circleNode.setAttributeNS(null, 'cx', x);
+        circleNode.setAttributeNS(null, 'cy', y);
+        circleNode.setAttributeNS(null, 'r', '5');
+        circleNode.setAttributeNS(null, 'fill', color);
+        circleNode.setAttributeNS(null, 'id', droneID);
+        svg.appendChild(circleNode);  }
+      else{
+        circleNode.setAttributeNS(null, 'cx', x);
+        circleNode.setAttributeNS(null, 'cy', y);
+        circleNode.setAttributeNS(null, 'fill', color);
+      }
+    }
+  )
+}
+  </script> 
+</head>
+
+<body>
+  <p>Current Position: </p>
+  <object id="map" data="static/images/lund-map.svg" type="image/svg+xml" ></object>
+  <script>
+    var set_delay = 50,
+    callout = function () {
+    $.ajax({
+      url: 'http://0.0.0.0:5000/get_order/${{order_uuid}}' // right amount of brackets?
+    })
+    .done(function (server_response) {
+      var order = JSON.parse(server_response)['{{order_uuid}}'];
+      if (order == null) console.log("no such order ${order_uuid}");
+      else if (order.status == "queue") console.log("drone ${order_uuid} in queue");
+      else console.log("drone for {{order_uuid}}: ${order.drone}");
+      //var avalaible_drones = Object.keys(server_response)
+      // for (const droneID of avalaible_drones){
+      //   var x = server_response[droneID].longitude
+      //   var y = server_response[droneID].latitude
+      //   var status = server_response[droneID].status
+      //   LoadDrone(droneID, x, y, status)
+      // }
+    })
+    .always(function (server_response) {
+        setTimeout(callout, set_delay);
+    });
+    };
+    callout();    
+  </script>
+
+
+</body>
+</html>
