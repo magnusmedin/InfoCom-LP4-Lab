@@ -6,6 +6,8 @@ from flask_cors import CORS
 import redis
 import json
 import requests
+from queue import Queue
+from multiprocessing import Process, Pipe
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -23,6 +25,14 @@ region = ", Lund, Skåne, Sweden"
 def send_request(drone_url, coords):
     with requests.Session() as session:
         resp = session.post(drone_url, json=coords)
+
+def getQ(child_conn):
+    if not q.empty():
+        child_conn.send(q.get())
+    else:
+        child_conn.send(None)
+    child_conn.close()
+
 
 @app.route('/planner', methods=['POST'])
 def route_planner():
@@ -47,9 +57,9 @@ def route_planner():
         # 1. Find avialable drone in the database
         # if no drone is availble:
         # drones = ["Test", "drone124"]
-        drones = ["Test"]
+        drones = ["drone124"]
         # drones = {"Test": '10.11.44.126', "drone124": '10.11.44.124'}
-        drones = {"Test": '192.168.1.141'}
+        drones = {"drone124": '10.11.44.124'}
         # if drones == None:
         #     print("No drones in redis database idk man")
 
@@ -64,7 +74,8 @@ def route_planner():
 
 
         if drone == None:
-            message = 'No available drone, try later'
+            message = 'No available drone, request placed in queue'
+            q.put(coords)
         else:
             # 2. Get the IP of available drone, 
             DRONE_URL = 'http://' + drone +':5000'
@@ -76,4 +87,5 @@ def route_planner():
 
 
 if __name__ == "__main__":
+    q = Queue()
     app.run(debug=True, host='0.0.0.0', port='5002')

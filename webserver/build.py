@@ -53,7 +53,7 @@ def get_drones():
     #=============================================================================================================================================
     drone_dict = {}
     # drones = ["Test", "drone124"]
-    drones = ["Test"]
+    drones = ["drone124"]
     # info = redis_server.get("Test")
     # info = json.loads(info)
     # print(info)
@@ -75,6 +75,4 @@ def get_drones():
     return jsonify(drone_dict)
 
 if __name__ == "__main__":
-    g = translate((13.21008, 55.71106))
-    print(g)
     app.run(debug=True, host='0.0.0.0', port='5000')

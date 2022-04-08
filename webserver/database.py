@@ -2,7 +2,8 @@ from flask import Flask, request
 from flask_cors import CORS
 import redis
 import json
-
+from multiprocessing import Process, Pipe
+from route_planner import getQ, send_request
 
 app = Flask(__name__)
 CORS(app)
@@ -29,12 +30,21 @@ def drone():
     redis_server.set(f"{droneID}", json.dumps(info))
 
     # if status is idle and queue has jobs then assignt first job from queue to drone
-
+    p.start()
+    res = parent_conn.recv()
+    print(res)
+    order = res
+    if order != None:
+        d_url = 'http://' + info['ip'] + ':5000'
+        send_request(d_url, order)
+        print("order here")
 
     # =======================================================================================
     return 'Get data'
 
 if __name__ == "__main__":
+    parent_conn,child_conn = Pipe()
+    p = Process(target=getQ, args=(child_conn))
 
 
     app.run(debug=True, host='0.0.0.0', port='5001')
