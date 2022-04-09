@@ -6,6 +6,9 @@ from flask_cors import CORS
 import redis
 import json
 import requests
+from collections import deque
+from multiprocessing import Process, Pipe
+import pickle
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -47,9 +50,9 @@ def route_planner():
         # 1. Find avialable drone in the database
         # if no drone is availble:
         # drones = ["Test", "drone124"]
-        drones = ["Test"]
+        drones = ["drone124"]
         # drones = {"Test": '10.11.44.126', "drone124": '10.11.44.124'}
-        drones = {"Test": '192.168.1.141'}
+        drones = {"drone124": '10.11.44.124'}
         # if drones == None:
         #     print("No drones in redis database idk man")
 
@@ -64,7 +67,12 @@ def route_planner():
 
 
         if drone == None:
-            message = 'No available drone, try later'
+            message = 'No available drone, request placed in queue'
+            with open("queue.obj", "rb") as f:
+                q = pickle.load(f)
+            q.append(coords)
+            with open("queue.obj", "wb+") as f:
+                pickle.dump(q, f)
         else:
             # 2. Get the IP of available drone, 
             DRONE_URL = 'http://' + drone +':5000'
