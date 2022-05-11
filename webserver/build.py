@@ -54,7 +54,7 @@ def get_drones():
     #=============================================================================================================================================
     drone_dict = {}
     # drones = ["Test", "drone124"]
-    drones = ["drone124"]
+    drones = ["drone124", "Test"]
     # info = redis_server.get("Test")
     
     # translated = translate((float(info['long']), float(info['lat'])))
@@ -77,14 +77,14 @@ def get_drones():
 
 queue = {}
 # själva urln 'get_order/<uuid: order_uuid>' är det som är konstigt
-# @app.route('get_order/<uuid: order_uuid>', methods=['GET'])
-# def get_order(order_uuid):
-#     order = queue[order_uuid]
-#     return(jsonify(order))
+@app.route('/get_order/<uuid:order_uuid>', methods=['GET'])
+def get_order(order_uuid):
+    order = queue[order_uuid]
+    return(jsonify(order))
 
-# @app.route('track/<uuid: order_uuid>', methods=['GET'])
-# def track(order_uuid):
-#     return render_template('track.html', **str(order_uuid))
+@app.route('/track/<uuid:order_uuid>', methods=['GET'])
+def track(order_uuid):
+    return render_template('track.html', **str(order_uuid))
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port='5000')

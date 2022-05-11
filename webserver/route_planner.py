@@ -49,10 +49,10 @@ def route_planner():
         # Here you need to find a drone that is availale from the database. You need to check the status of the drone, there are two status, 'busy' or 'idle', only 'idle' drone is available and can be sent the coords to run delivery
         # 1. Find avialable drone in the database
         # if no drone is availble:
-        # drones = ["Test", "drone124"]
-        drones = ["drone124"]
-        # drones = {"Test": '10.11.44.126', "drone124": '10.11.44.124'}
-        drones = {"drone124": '10.11.44.124'}
+        drones = ["Test", "drone124"]
+        # drones = ["drone124"]
+        drones = {"Test": '10.11.44.126', "drone124": '10.11.44.124'}
+        # drones = {"drone124": '10.11.44.124'}
         # if drones == None:
         #     print("No drones in redis database idk man")
 
