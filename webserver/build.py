@@ -68,8 +68,8 @@ def get_drones():
             info = json.loads(info)
         translated = translate((float(info['long']), float(info['lat'])))
         drone_dict[d] = {'longitude': translated[0], 'latitude': translated[1], 'status': info['status']}
-        with open("queue.obj", "rb") as f:
-            print(pickle.load(f))
+        # with open("queue.obj", "rb") as f:
+        #     print(pickle.load(f))
 
 
     return jsonify(drone_dict)
