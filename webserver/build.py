@@ -68,20 +68,23 @@ def get_drones():
             info = json.loads(info)
         translated = translate((float(info['long']), float(info['lat'])))
         drone_dict[d] = {'longitude': translated[0], 'latitude': translated[1], 'status': info['status']}
+        with open("queue.obj", "rb") as f:
+            print(pickle.load(f))
 
 
     return jsonify(drone_dict)
 
 
 queue = {}
-@app.route('get_order/<uuid: order_uuid>', methods=['GET'])
-def get_order(order_uuid):
-    order = queue[order_uuid]
-    return(jsonify(order))
+# själva urln 'get_order/<uuid: order_uuid>' är det som är konstigt
+# @app.route('get_order/<uuid: order_uuid>', methods=['GET'])
+# def get_order(order_uuid):
+#     order = queue[order_uuid]
+#     return(jsonify(order))
 
-@app.route('track/<uuid: order_uuid>', methods=['GET'])
-def track(order_uuid):
-    return render_template('track.html', **str(order_uuid))
+# @app.route('track/<uuid: order_uuid>', methods=['GET'])
+# def track(order_uuid):
+#     return render_template('track.html', **str(order_uuid))
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port='5000')
