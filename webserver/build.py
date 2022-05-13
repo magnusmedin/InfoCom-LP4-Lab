@@ -7,7 +7,8 @@ import time
 import redis
 import pickle
 import json
-import uuid
+from DroneCommunicator import DroneCommunicator
+from http import HTTPStatus
 
 app = Flask(__name__)
 CORS(app)
@@ -76,13 +77,15 @@ def get_drones():
 
 
 queue = {}
-# själva urln 'get_order/<uuid: order_uuid>' är det som är konstigt
-@app.route('/get_order/<uuid:order_uuid>', methods=['GET'])
-def get_order(order_uuid):
-    order = queue[order_uuid]
-    return(jsonify(order))
 
-@app.route('/track/<uuid:order_uuid>', methods=['GET'])
+@app.route('/get_order/<order_uuid>', methods=['GET'])
+def get_order(order_uuid):
+    # if drone queue exists: return drone json stuff
+    # else: 
+    #return(http.HTTPStatus.NO_CONTENT) # kanske inte funkar
+    return('', 204)
+
+@app.route('/track/<order_uuid>', methods=['GET'])
 def track(order_uuid):
     return render_template('track.html')
 

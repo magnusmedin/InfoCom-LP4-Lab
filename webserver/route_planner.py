@@ -6,9 +6,9 @@ from flask_cors import CORS
 import redis
 import json
 import requests
+from order import Order
 from collections import deque
 from multiprocessing import Process, Pipe
-import pickle
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -48,37 +48,34 @@ def route_planner():
         # ======================================================================
         # Here you need to find a drone that is availale from the database. You need to check the status of the drone, there are two status, 'busy' or 'idle', only 'idle' drone is available and can be sent the coords to run delivery
         # 1. Find avialable drone in the database
-        # if no drone is availble:
-        drones = ["Test", "drone124"]
-        # drones = ["drone124"]
         drones = {"Test": '10.11.44.126', "drone124": '10.11.44.124'}
-        # drones = {"drone124": '10.11.44.124'}
-        # if drones == None:
-        #     print("No drones in redis database idk man")
-
         drone = None
 
         for k, v in drones.items():
+            print(k)
             info = redis_server.get(k)
-            info = json.loads(info)
-            if info['status'] == 'idle':
-                drone = v
-                break
+            print(info)
+            if info != None:
+                info = json.loads(info)
+                if info['status'] == 'idle':
+                    drone = v
+                    break
 
 
         if drone == None:
             message = 'No available drone, request placed in queue'
-            with open("queue.obj", "rb") as f:
-                q = pickle.load(f)
-            q.append(coords)
-            with open("queue.obj", "wb+") as f:
-                pickle.dump(q, f)
+            # push the order to the queue then figure out which script to run to check if drone is done
         else:
             # 2. Get the IP of available drone, 
             DRONE_URL = 'http://' + drone +':5000'
             # 3. Send coords to the URL of available drone
-            send_request(DRONE_URL, coords)
-            message = 'Got address and sent request to the drone'
+            # send_request(DRONE_URL, coords)
+            message = 'Got address and placed order in queue'
+        order = Order.from_coords(coords)
+        print(order.order_uuid)
+        order = order.to_json()
+        print(order)
+        redis_server.rpush("OrderQueue", order)
     return message
         # ======================================================================
 

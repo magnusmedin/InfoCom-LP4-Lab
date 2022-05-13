@@ -3,4 +3,4 @@
 *.bak
 *icloud
 *.rdb
-test.py
+test.*
