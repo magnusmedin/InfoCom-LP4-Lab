@@ -6,9 +6,10 @@ from flask_cors import CORS
 import redis
 import json
 import requests
+from DroneCommunicator import DroneCommunicator
 from order import Order
 from collections import deque
-from multiprocessing import Process, Pipe
+import threading
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -72,10 +73,11 @@ def route_planner():
             # send_request(DRONE_URL, coords)
             message = 'Got address and placed order in queue'
         order = Order.from_coords(coords)
-        print(order.order_uuid)
+        print("-----------------------------------------------------------")
         order = order.to_json()
         print(order)
         redis_server.rpush("OrderQueue", order)
+        # threading.Thread(target=DroneCommunicator.queueLoop(redis_server))
     return message
         # ======================================================================
 
