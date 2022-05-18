@@ -46,6 +46,7 @@
 
 # Old stuff
 
+from concurrent.futures import thread
 import redis
 import json
 import requests
@@ -90,7 +91,9 @@ class DroneCommunicator:
                     print(order.coordinatesFrom)
                     coords = self.get_coords(order)
                     print(coords)
-                    self.send_request("http://" + drone_ip + ":5000", coords)
+                    # self.send_request("http://" + drone_ip + ":5000", coords)
+                    t = threading.Thread(target=self.send_request, args=["http://" + drone_ip + ":5000", coords])
+                    t.start()
 
 
 
