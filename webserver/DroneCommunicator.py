@@ -97,7 +97,7 @@ class DroneCommunicator:
                             drone_ip = v
                             break
 
-                t = threading.Thread(target=self.talk, args=[self, drone_ip])
+                t = threading.Thread(target=self.talk, args=[drone_ip])
                 t.start()
                 t.join()
 
