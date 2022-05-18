@@ -75,12 +75,9 @@ def get_drones():
 
     return jsonify(drone_dict)
 
-
-queue = {}
-
 @app.route('/get_order/<order_uuid>', methods=['GET'])
 def get_order(order_uuid):
-    # if drone queue exists: return drone json stuff
+    # if order is being processed: return drone json stuff
     # else: 
     #return(http.HTTPStatus.NO_CONTENT) # kanske inte funkar
     return('', 204)

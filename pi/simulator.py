@@ -64,7 +64,7 @@ clear_pixels = [
 ]
 
 def getMovement(src, dst):
-    speed = 0.00001
+    speed = 0.0001          # divide by 10 to get back original speed
     dst_x, dst_y = dst
     x, y = src
     direction = math.sqrt((dst_x - x)**2 + (dst_y - y)**2)
