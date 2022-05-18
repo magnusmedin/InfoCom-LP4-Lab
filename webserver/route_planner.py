@@ -53,9 +53,9 @@ def route_planner():
         drone = None
 
         for k, v in drones.items():
-            print(k)
+            # print(k)
             info = redis_server.get(k)
-            print(info)
+            # print(info)
             if info != None:
                 info = json.loads(info)
                 if info['status'] == 'idle':
@@ -75,8 +75,11 @@ def route_planner():
         order = Order.from_coords(coords)
         print("-----------------------------------------------------------")
         order = order.to_json()
+        print("Order Created")
         print(order)
-        redis_server.rpush("OrderQueue", order)
+        res = redis_server.rpush("OrderQueue", order)
+        print("Result of redis")
+        print(res)
         # threading.Thread(target=DroneCommunicator.queueLoop(redis_server))
     return message
         # ======================================================================
