@@ -20,7 +20,8 @@ class DroneCommunicator:
     def queueLoop(self):
         while True:
             sleep(1)
-            print("Idle loop")
+            nbr = self.redis_server.llen("OrderQueue")
+            print(f"Idle loop, Orders In Queue: {nbr}")
             if (self.redis_server.llen("OrderQueue") > 0):
                 drones = {"Test": '10.11.44.126', "drone124": '10.11.44.124'}
                 drone = None
