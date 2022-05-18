@@ -3,12 +3,8 @@ from flask import Flask, render_template, request
 from flask.json import jsonify
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
-import time
 import redis
-import pickle
 import json
-from DroneCommunicator import DroneCommunicator
-from http import HTTPStatus
 
 app = Flask(__name__)
 CORS(app)
@@ -56,10 +52,7 @@ def get_drones():
     drone_dict = {}
     # drones = ["Test", "drone124"]
     drones = ["drone124", "Test"]
-    # info = redis_server.get("Test")
     
-    # translated = translate((float(info['long']), float(info['lat'])))
-    # drone_dict[info['id']] = {'longitude': translated[0], 'latitude': translated[1], 'status': info['status']}
     for d in drones:
         info = redis_server.get(d)
         if info == None:
@@ -69,8 +62,7 @@ def get_drones():
             info = json.loads(info)
         translated = translate((float(info['long']), float(info['lat'])))
         drone_dict[d] = {'longitude': translated[0], 'latitude': translated[1], 'status': info['status']}
-        # with open("queue.obj", "rb") as f:
-        #     print(pickle.load(f))
+
 
 
     return jsonify(drone_dict)
