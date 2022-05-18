@@ -23,6 +23,7 @@ class DroneCommunicator:
             print("Idle loop")
             if (self.redis_server.llen("OrderQueue") > 0):
                 drones = {"Test": '10.11.44.126', "drone124": '10.11.44.124'}
+                drone = None
                 for k, v in drones.items():
                     print(k)
                     info = self.redis_server.get(k)
