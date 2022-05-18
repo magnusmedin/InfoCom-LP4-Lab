@@ -74,6 +74,8 @@ class DroneCommunicator:
             if (nbr > 0):
                 drones = {"Test": '10.11.44.126', "drone124": '10.11.44.124'}
                 drone_ip = None
+                drone_name = ""
+                info = ""
                 for k, v in drones.items():
                     print(k)
                     drone_info = self.redis_server.get(k)
@@ -82,11 +84,14 @@ class DroneCommunicator:
                         drone_info = json.loads(drone_info)
                         if drone_info['status'] == 'idle':
                             drone_ip = v
+                            drone_name = k
                             break
                 
                 if drone_ip != None:
                     order = self.redis_server.lpop("OrderQueue")
                     order = json.loads(order, object_hook=Order.from_json)
+                    info['order_uuid'] = order.order_uuid
+                    redis_server.set(dorne_name, json.dumps(info))
                     print("sending req to drone cool")
                     print(order.coordinatesFrom)
                     coords = self.get_coords(order)
