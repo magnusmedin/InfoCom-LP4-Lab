@@ -77,10 +77,7 @@ def route_planner():
         order = order.to_json()
         print("Order Created")
         print(order)
-        res = redis_server.rpush("OrderQueue", order)
-        print("Result of redis")
-        print(res)
-        # threading.Thread(target=DroneCommunicator.queueLoop(redis_server))
+        redis_server.rpush("OrderQueue", order)
     return message
         # ======================================================================
 
