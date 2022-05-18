@@ -40,9 +40,9 @@ def distance(_fr, _to):
 def run(id, current_coords, from_coords, to_coords, SERVER_URL):
     drone_coords = current_coords
 
-    # Move from current_coodrs to from_coords 
+    # Move from current_coords to from_coords 
     d_long, d_la =  getMovement(drone_coords, from_coords)
-    while distance(drone_coords, from_coords) > 0.0004:
+    while distance(drone_coords, from_coords) > 0.0008:      #change back distance
         drone_coords = moveDrone(drone_coords, d_long, d_la)
         send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='busy')
         sleep(0.1)
@@ -51,15 +51,19 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
     send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
 
 
-    # Move from from_coodrs to to_coords
+    # Move from from_coords to to_coords
     d_long, d_la =  getMovement(drone_coords, to_coords)
-    while distance(drone_coords, to_coords) > 0.0004:
+    while distance(drone_coords, to_coords) > 0.0008:  #change back distance
+        
         drone_coords = moveDrone(drone_coords, d_long, d_la)
+        
         send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='busy')
+        
         sleep(0.1)
 
     # when we have arrived led to waiting symbol and sound effect await joystick input to continue
     send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
+    
 
     # Stop and update status to database
     send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='idle')
