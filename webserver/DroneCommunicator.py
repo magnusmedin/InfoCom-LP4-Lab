@@ -64,20 +64,6 @@ class DroneCommunicator:
 
     def get_coords(self, order):
         return {'from' : order.coordinatesFrom, 'to' : order.coordinatesTo}
-    
-    def talk(self, drone_ip):
-        if drone_ip != None:
-            order = self.redis_server.blpop("OrderQueue")
-            order = json.loads(order, object_hook=Order.from_json)
-            print("sending req to drone cool")
-            print(order.coordinatesFrom)
-            coords = self.get_coords(order)
-            print(coords)
-            # self.send_request("http://" + drone + ":5000", coords)
-            t = threading.Thread(target=self.send_request("http://" + drone_ip + ":5000", coords))
-            t.start()
-            t.join()
-
 
     def queueLoop(self):
         while True:
@@ -96,10 +82,14 @@ class DroneCommunicator:
                         if drone_info['status'] == 'idle':
                             drone_ip = v
                             break
-
-                t = threading.Thread(target=self.talk, args=[drone_ip])
-                t.start()
-                t.join()
+                
+                if drone_ip != None:
+                    order = self.redis_server.blpop("OrderQueue")
+                    order = json.loads(order, object_hook=Order.from_json)
+                    print("sending req to drone cool")
+                    print(order.coordinatesFrom)
+                    coords = self.get_coords(order)
+                    print(coords)
 
 
 
