@@ -91,7 +91,7 @@ class DroneCommunicator:
                     order = self.redis_server.lpop("OrderQueue")
                     order = json.loads(order, object_hook=Order.from_json)
                     drone_info['order_uuid'] = order.order_uuid
-                    redis_server.set(drone_name, json.dumps(info))
+                    redis_server.set(drone_name, json.dumps(drone_info))
                     print("sending req to drone cool")
                     print(order.coordinatesFrom)
                     coords = self.get_coords(order)
