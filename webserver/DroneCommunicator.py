@@ -90,6 +90,7 @@ class DroneCommunicator:
                     print(order.coordinatesFrom)
                     coords = self.get_coords(order)
                     print(coords)
+                    self.send_request("http://" + drone_ip + ":5000", coords)
 
 
 
