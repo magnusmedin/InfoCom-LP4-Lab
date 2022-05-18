@@ -51,6 +51,7 @@ import json
 import requests
 from order import Order
 from time import sleep
+import threading
 
 class DroneCommunicator:
     
@@ -87,7 +88,9 @@ class DroneCommunicator:
                 print(order.coordinatesFrom)
                 coords = self.get_coords(order)
                 print(coords)
-                self.send_request("http://" + drone + ":5000", coords)
+                # self.send_request("http://" + drone + ":5000", coords)
+                t = threading.Thread(target=self.send_request("http://" + drone + ":5000", coords))
+                t.start()
 
 
 
