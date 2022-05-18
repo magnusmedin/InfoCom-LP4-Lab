@@ -84,7 +84,7 @@ class DroneCommunicator:
                             break
                 
                 if drone_ip != None:
-                    order = self.redis_server.blpop("OrderQueue")
+                    order = self.redis_server.lpop("OrderQueue")
                     order = json.loads(order, object_hook=Order.from_json)
                     print("sending req to drone cool")
                     print(order.coordinatesFrom)
