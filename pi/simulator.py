@@ -2,65 +2,8 @@ import math
 import requests
 import argparse
 import json
-# from pygame import mixer
 from time import sleep
-# from sense_hat import SenseHat
 
-# mixer.init()
-# sense = SenseHat()
-
-# def display_status(pixels):
-#     sense.set_pixels(pixels)
-
-g = (0, 255, 0)
-b = (0, 0, 0)
-r = (255, 0, 0)
-y = (255, 255, 0)
-w = (255, 255, 255)
-
-idle_pixels = [
-    g, g, g, g, g, g, g, w,
-    g, g, g, g, g, g, w, w,
-    g, g, g, g, g, w, w, g,
-    w, g, g, g, w, w, g, g,
-    w, w, g, w, w, g, g, g,
-    g, w, w, w, g, g, g, g,
-    g, g, w, g, g, g, g, g,
-    g, g, g, g, g, g, g, g,
-]
-
-waiting_pixels = [
-    y, y, w, w, w, w, y, y,
-    y, y, w, w, w, w, y, y,
-    y, y, w, w, w, w, y, y,
-    y, y, y, w, w, y, y, y,
-    y, y, y, w, w, y, y, y,
-    y, y, w, y, y, w, y, y,
-    y, y, w, y, y, w, y, y,
-    y, y, w, w, w, w, y, y,
-]
-
-busy_pixels = [
-    r, w, r, r, r, r, w, r,
-    r, w, w, r, r, w, w, r,
-    r, r, w, w, w, w, r, r,
-    r, r, r, w, w, r, r, r,
-    r, r, w, w, w, w, r, r,
-    r, w, w, r, r, w, w, r,
-    r, w, r, r, r, r, w, r,
-    r, r, r, r, r, r, r, r,
-]
-
-clear_pixels = [
-    b, b, b, b, b, b, b, b,
-    b, b, b, b, b, b, b, b,
-    b, b, b, b, b, b, b, b,
-    b, b, b, b, b, b, b, b,
-    b, b, b, b, b, b, b, b,
-    b, b, b, b, b, b, b, b,
-    b, b, b, b, b, b, b, b,
-    b, b, b, b, b, b, b, b,
-]
 
 def getMovement(src, dst):
     speed = 0.0001          # divide by 10 to get back original speed
@@ -71,11 +14,13 @@ def getMovement(src, dst):
     latitude_move = speed * ((dst_y - y) / direction )
     return longitude_move, latitude_move
 
+
 def moveDrone(src, d_long, d_la):
     x, y = src
     x = x + d_long
     y = y + d_la        
     return (x, y)
+
 
 def send_location(SERVER_URL, id, drone_coords, status):
     with requests.Session() as session:
@@ -86,90 +31,38 @@ def send_location(SERVER_URL, id, drone_coords, status):
                     }
         resp = session.post(SERVER_URL, json=drone_info)
 
+
 def distance(_fr, _to):
     _dist = ((_to[0] - _fr[0])**2 + (_to[1] - _fr[1])**2)*10**6
     return _dist
-        
+
+    
 def run(id, current_coords, from_coords, to_coords, SERVER_URL):
     drone_coords = current_coords
-    joystick = True
-    # order recevied play sound and change led to display busy animation 
 
-    # mixer.music.load("./sounds/doorbell-1.wav")
-    # mixer.music.play()
-
-    # while mixer.music.get_busy() == True:
-    # Move from current_coodrs to from_coords
-    
-    # display_status(busy_pixels)
+    # Move from current_coodrs to from_coords 
     d_long, d_la =  getMovement(drone_coords, from_coords)
     while distance(drone_coords, from_coords) > 0.0004:
         drone_coords = moveDrone(drone_coords, d_long, d_la)
         send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='busy')
         sleep(0.1)
-        # display_status(clear_pixels)
-
-        # mixer.music.stop()
-        # mixer.music.unload()
-
 
     # we have arrived to from address led to waiting, and play sound effect and await joystick input to continue
     send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
-    # display_status(waiting_pixels)
-    
-    # mixer.music.load("./sounds/space-odyssey.mp3")
-    # mixer.music.play()
 
-    # while mixer.music.get_busy() == True:
-    # while joystick:
-    #     for event in sense.stick.get_events():
-    #         if event.action == "pressed":
-    #             joystick = False
 
-    # joystick = True
-        # mixer.music.stop()
-        # mixer.music.unload()
-
-    # after continue play sound effect and change led to busy animation
-    # mixer.music.load("./sounds/space-odyssey.mp3")
-    # mixer.play()
-
-    # while mixer.music.get_busy() == True:
-        # Move from from_coodrs to to_coords
-    
-    # display_status(busy_pixels)
+    # Move from from_coodrs to to_coords
     d_long, d_la =  getMovement(drone_coords, to_coords)
     while distance(drone_coords, to_coords) > 0.0004:
         drone_coords = moveDrone(drone_coords, d_long, d_la)
         send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='busy')
         sleep(0.1)
-        # display_status(clear_pixels)
 
-
-        # mixer.stop()
-        # mixer.unload()
-    
     # when we have arrived led to waiting symbol and sound effect await joystick input to continue
     send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
-    # display_status(waiting_pixels)
-
-    # Music
-    # mixer.music.load("./sounds/space-odyssey.mp3")
-    # mixer.music.play()
-
-    # while mixer.music.get_busy() == True:
-    # while joystick:
-    #     for event in sense.stick.get_events():
-    #         if event.action == "pressed":
-    #             joystick = False
-
-    # joystick = True
-        # mixer.music.stop()
-        # mixer.music.unload()
 
     # Stop and update status to database
     send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='idle')
-    # display_status(idle_pixels)
     
     return drone_coords[0], drone_coords[1]
    
@@ -202,16 +95,3 @@ if __name__ == "__main__":
     data = {'long' : drone_long, 'lat' : drone_lat}
     with open('data.json', 'w') as f:
         json.dump(data, f, sort_keys=True, indent=4)
-
-    # Display lights
-    # when done play sound effect and change led to idle 
-    # display_status(idle_pixels)
-
-    # Music 
-    # mixer.music.load("./sounds/coin.wav")
-    # mixer.music.play()
-
-    # while mixer.music.get_busy() == True:
-    #     sleep(2)
-    #     mixer.music.stop()
-
