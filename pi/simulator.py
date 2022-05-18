@@ -4,13 +4,13 @@ import argparse
 import json
 # from pygame import mixer
 from time import sleep
-from sense_hat import SenseHat
+# from sense_hat import SenseHat
 
 # mixer.init()
-sense = SenseHat()
+# sense = SenseHat()
 
-def display_status(pixels):
-    sense.set_pixels(pixels)
+# def display_status(pixels):
+#     sense.set_pixels(pixels)
 
 g = (0, 255, 0)
 b = (0, 0, 0)
@@ -101,7 +101,7 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
     # while mixer.music.get_busy() == True:
     # Move from current_coodrs to from_coords
     
-    display_status(busy_pixels)
+    # display_status(busy_pixels)
     d_long, d_la =  getMovement(drone_coords, from_coords)
     while distance(drone_coords, from_coords) > 0.0004:
         drone_coords = moveDrone(drone_coords, d_long, d_la)
@@ -115,18 +115,18 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
 
     # we have arrived to from address led to waiting, and play sound effect and await joystick input to continue
     send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
-    display_status(waiting_pixels)
+    # display_status(waiting_pixels)
     
     # mixer.music.load("./sounds/space-odyssey.mp3")
     # mixer.music.play()
 
     # while mixer.music.get_busy() == True:
-    while joystick:
-        for event in sense.stick.get_events():
-            if event.action == "pressed":
-                joystick = False
+    # while joystick:
+    #     for event in sense.stick.get_events():
+    #         if event.action == "pressed":
+    #             joystick = False
 
-    joystick = True
+    # joystick = True
         # mixer.music.stop()
         # mixer.music.unload()
 
@@ -137,7 +137,7 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
     # while mixer.music.get_busy() == True:
         # Move from from_coodrs to to_coords
     
-    display_status(busy_pixels)
+    # display_status(busy_pixels)
     d_long, d_la =  getMovement(drone_coords, to_coords)
     while distance(drone_coords, to_coords) > 0.0004:
         drone_coords = moveDrone(drone_coords, d_long, d_la)
@@ -151,25 +151,25 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
     
     # when we have arrived led to waiting symbol and sound effect await joystick input to continue
     send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='waiting')
-    display_status(waiting_pixels)
+    # display_status(waiting_pixels)
 
     # Music
     # mixer.music.load("./sounds/space-odyssey.mp3")
     # mixer.music.play()
 
     # while mixer.music.get_busy() == True:
-    while joystick:
-        for event in sense.stick.get_events():
-            if event.action == "pressed":
-                joystick = False
+    # while joystick:
+    #     for event in sense.stick.get_events():
+    #         if event.action == "pressed":
+    #             joystick = False
 
-    joystick = True
+    # joystick = True
         # mixer.music.stop()
         # mixer.music.unload()
 
     # Stop and update status to database
     send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='idle')
-    display_status(idle_pixels)
+    # display_status(idle_pixels)
     
     return drone_coords[0], drone_coords[1]
    
